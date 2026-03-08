@@ -1,24 +1,24 @@
-# Giới thiệu về API
+# API Introduction
 
-Đây là backend API cho dự án Order món ă
+This is the backend API for the Food Ordering project.
 
 - Authentication: Login, Register, Logout
-- Account: Get thông tin cá nhân, Cập nhật thông tin cá nhân
-- Dish: Đọc, Thêm, Sửa, Xóa món ăn
-- Media: Upload hình ảnh
+- Account: Get and update personal information
+- Dish: Read, Add, Update, Delete dishes
+- Media: Upload images
 - Test API
 
-> Lưu ý quan trọng: thỉnh thoảng nên pull code mới từ github repo của mình về, vì đôi khi mình có cập nhật logic API trong quá trình mình quay video
+> Important note: Please pull the latest code from the GitHub repo regularly, as the API logic may be updated during the video recording process.
 
-> Trong file `server/.env` có thuộc tính `COOKIE_MODE`, hãy set `true` nếu bạn muốn dùng cookie cho việc authentication ở server
+> In the `server/.env` file, there is a `COOKIE_MODE` property. Set it to `true` if you want to use cookies for authentication on the server.
 
-## Công nghệ sử dụng
+## Technologies Used
 
 Node.js + Fastify + Sqlite
 
-## Cài đặt
+## Installation
 
-Chỉ cần clone repository này về máy, cd vào thư mục, cài đặt các packages và chạy lệnh `npm run dev` là được
+Just clone this repository, cd into the folder, install the packages, and run `npm run dev`:
 
 ```bash
 cd server
@@ -26,30 +26,30 @@ npm i
 npm run dev
 ```
 
-Trong trường hợp muốn chạy dishion, chạy lệnh
+To run the production build:
 
 ```bash
 npm run build
 npm run start
 ```
 
-Muốn xem thông tin database, chỉ cần mở Prisma Studio lên bằng câu lệnh
+To view the database, open Prisma Studio with the command:
 
 ```bash
 npx prisma studio
 ```
 
-Nó sẽ chạy ở url [http://localhost:5555](http://localhost:5555)
+It will run at [http://localhost:5555](http://localhost:5555)
 
-Trong source code có chứa file `.env` để config, trong file này bạn có thể đổi port cho API backend, mặc định là port `4000`
+The source code contains a `.env` file for configuration. In this file, you can change the backend API port (default is `4000`).
 
-Khi upload thì hình ảnh sẽ được đi vào thư mục `/uploads` trong folder `server`
+When uploading, images will be stored in the `/uploads` directory inside the `server` folder.
 
-## Format response trả về
+## Response Format
 
-Định dạng trả về là JSON, và luôn có trường `message`, ngoài ra có thể sẽ có trường `data` hoặc `errors`
+The response format is JSON and always contains a `message` field. It may also include `data` or `errors` fields.
 
-Đây là ví dụ về response trả về khi thành công
+Example of a successful response:
 
 ```json
 {
@@ -57,18 +57,18 @@ Khi upload thì hình ảnh sẽ được đi vào thư mục `/uploads` trong f
     "id": 2,
     "name": "Iphone 11",
     "price": 20000000,
-    "description": "Mô tả cho iphone 11",
+    "description": "Description for iPhone 11",
     "image": "http://localhost:4000/static/bec024f9ea534b7fbf078cb5462b30aa.jpg",
     "createdAt": "2024-03-11T03:51:14.028Z",
     "updatedAt": "2024-03-11T03:51:14.028Z"
   },
-  "message": "Tạo sản phẩm thành công!"
+  "message": "Product created successfully!"
 }
 ```
 
-Trong trường hợp lỗi thì nếu lỗi liên quan đến việc body gửi lên không đúng định dạng thì server sẽ trả về lỗi `422` và thông tin lỗi như sau
+If there is an error and the request body is not in the correct format, the server will return a `422` error with details as follows:
 
-Ví dụ dưới đây body thiếu trường `price`
+Example: The body is missing the `price` field
 
 ```json
 {
@@ -88,43 +88,43 @@ Ví dụ dưới đây body thiếu trường `price`
 }
 ```
 
-Trong trường hợp lỗi khác, server sẽ trả về lỗi trong trường `message`, ví dụ
+For other errors, the server will return the error in the `message` field, for example:
 
 ```json
 {
-  "message": "Không tìm thấy dữ liệu!",
+  "message": "Data not found!",
   "statusCode": 404
 }
 ```
 
-## Chi tiết các API
+## API Details
 
-Mặc định API sẽ chạy ở địa chỉ [http://localhost:4000](http://localhost:4000), các bạn nào muốn đổi port thì vào file `.env` để thay đổi port
+By default, the API runs at [http://localhost:4000](http://localhost:4000). If you want to change the port, edit the `.env` file.
 
-Với các API POST, PUT thông thường thì body gửi lên phải là JSON, và phải có header `Content-Type: application/json`.
+For standard POST and PUT APIs, the request body must be JSON and must include the header `Content-Type: application/json`.
 
-Đặc biệt API upload hình ảnh thì phải gửi dưới dạng `form-data`
+For image upload APIs, you must send the request as `form-data`.
 
-API xác thực người dùng thông qua session token, session token này là một JWT, secret key JWT này sẽ được lưu trong file `.env` và được sử dụng để tạo và verify token
+User authentication is handled via a session token, which is a JWT. The JWT secret key is stored in the `.env` file and is used to create and verify tokens.
 
-Đối với các API cần xác thực người dùng như bên cụm API về `Account` thì bạn cần gửi accessToken lên server thông qua header `Authorization: "Bearer <accessToken>"`
+For APIs that require user authentication (such as the `Account` group), you need to send the accessToken to the server via the header `Authorization: "Bearer <accessToken>"`
 
-### Test API: muốn biết api có hoạt động không
+### Test API: Check if the API is working
 
-- `GET /test`: Trả về message nghĩa là API hoạt động
+- `GET /test`: Returns a message if the API is working
 
-### Các API cần realtime
+### APIs requiring realtime
 
-- `POST /guest/orders`: Tạo order mới
+- `POST /guest/orders`: Create a new order
 
-## Setup nhanh postman
+## Quick Postman Setup
 
-Mình có lưu 1 file là `NextJs Free API.postman_collection.json` trong thư mục `server`, các bạn chỉ cần import file này vào Postman là có ngay collection của mình. Tiếp theo các bạn tạo 1 environment mới, và set biến `host` là `http://localhost:4000`, và chọn environment này khi gọi API là xong.
+A file named `NextJs Free API.postman_collection.json` is saved in the `server` directory. Just import this file into Postman to get the collection. Then, create a new environment, set the `host` variable to `http://localhost:4000`, and select this environment when calling the API.
 
-## Tài khoản mặc định
+## Default Accounts
 
-Tài khoản admin: admin@order.com | 123456
-Tài khoản user:
+Admin account: admin@order.com | 123456
+User accounts:
 
 - phuminhdat@gmail.com | 123123
 - buianhson@gmail.com | 123123
